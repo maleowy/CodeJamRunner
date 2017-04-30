@@ -15,28 +15,32 @@ namespace CodeJamRunner
 			int ATTEMPT = 0;
 
 		    Run(YEAR, ROUND, PROBLEM, FILE_TYPE, ATTEMPT);
-		}
+        }
 
 	    private static void Run(string year, RoundEnum round, ProblemEnum problem, FileTypeEnum fileType, int attempt)
 	    {
             Prepare(year, round, problem);
 
             Type testCaseType = Type.GetType($"CodeJamRunner.CodeJam_{year}_{round}_{problem}");
+	        ITestCase testCase = null;
 
-	        try
+            try
 	        {
-	            var testCase = (ITestCase) Activator.CreateInstance(testCaseType);
-
-                new Problem(testCase)
-                {
-                    FileType = fileType,
-                    Attempt = attempt
-                }.Run();
+	            testCase = (ITestCase) Activator.CreateInstance(testCaseType);
             }
-	        catch
+            catch
+            {
+                Console.WriteLine("Show All Files and add generated folder to the Solution");
+                Console.ReadLine();
+            }
+
+	        if (testCase != null)
 	        {
-	            Console.WriteLine("Show All Files and add generated folder to the Solution");
-	            Console.ReadLine();
+	            new Problem(testCase)
+	            {
+	                FileType = fileType,
+	                Attempt = attempt
+	            }.Run();
 	        }
         }
 
